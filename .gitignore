@@ -1,0 +1,10 @@
+# Ignore Python virtual environment
+.venv/
+
+# Byte-compiled files
+__pycache__/
+*.pyc
+
+# OS and editor files
+.DS_Store
+*.swp
