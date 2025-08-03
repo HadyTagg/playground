@@ -117,9 +117,9 @@ while running:
     while last_y > -(camera_offset + buffer_above_screen):
         remaining_gap = max_platform_gap - skipped_height
 
-        # Ensure we never exceed the max gap
+        # Ensure the cumulative gap never exceeds the maximum
         if remaining_gap <= min_platform_gap:
-            dy = min_platform_gap
+            dy = remaining_gap
         else:
             dy = random.randint(min_platform_gap, remaining_gap)
 
@@ -136,12 +136,8 @@ while running:
             highest_platform_y = min(highest_platform_y, y)
             skipped_height = 0
         else:
+            # No platform placed here, just move upward
             last_y = y
-            highest_platform_y = min(highest_platform_y, y)
-            skipped_height = 0
-        else:
-            last_y = y
-            highest_platform_y = min(highest_platform_y, y)
 
     # Draw everything
     screen.fill(WHITE)
