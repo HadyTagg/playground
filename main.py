@@ -115,14 +115,20 @@ while running:
     buffer_above_screen = 2 * HEIGHT
     skipped_height = 0
     while last_y > -(camera_offset + buffer_above_screen):
-        max_dy = max_platform_gap - skipped_height
-        dy = random.randint(min_platform_gap, max(min_platform_gap, max_dy))
+        remaining_gap = max_platform_gap - skipped_height
+
+        # Ensure we never exceed the max gap
+        if remaining_gap <= min_platform_gap:
+            dy = min_platform_gap
+        else:
+            dy = random.randint(min_platform_gap, remaining_gap)
+
         y = last_y - dy
         skipped_height += dy
 
         must_place = skipped_height >= max_platform_gap or random.random() < 1.0 / platform_density_factor
 
-        if must_place:
+        if must_place or remaining_gap <= min_platform_gap:
             dx = random.randint(-max_horizontal_reach, max_horizontal_reach)
             x = max(0, min(WIDTH - platform_width, last_x + dx))
             platforms.append(pygame.Rect(x, y, platform_width, platform_height))
@@ -130,7 +136,11 @@ while running:
             highest_platform_y = min(highest_platform_y, y)
             skipped_height = 0
         else:
-            last_y = y  # No platform, just move up
+            last_y = y
+            highest_platform_y = min(highest_platform_y, y)
+            skipped_height = 0
+        else:
+            last_y = y
             highest_platform_y = min(highest_platform_y, y)
 
     # Draw everything
@@ -146,3 +156,4 @@ while running:
 
 pygame.quit()
 sys.exit()
+
